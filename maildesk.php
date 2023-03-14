@@ -10,7 +10,7 @@
 
 add_action( 'wp', 'schedule_daily_post_summary' );
 
-
+//Made for Trial of Sending Mail Every Minute
 if( ! function_exists( 'md_add_cron_schedules' ) ) :
     function md_add_cron_schedules( $schedules = array() ) {
     
@@ -26,7 +26,7 @@ endif;
 
 function schedule_daily_post_summary() {
     if ( ! wp_next_scheduled( 'send_daily_post_summary' ) ) {
-        wp_schedule_event( time(), 'every_minute', 'send_daily_post_summary' );
+        wp_schedule_event( time(), 'daily', 'send_daily_post_summary' );
     }
 }
 
