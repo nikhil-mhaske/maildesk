@@ -15,7 +15,7 @@ if( ! function_exists( 'md_add_cron_schedules' ) ) :
     function md_add_cron_schedules( $schedules = array() ) {
     
     $schedules['every_minute'] = array(
-    'interval' => 60,
+    'interval' => 120,
     'display' => __( 'Every Minute', 'maildesk' ),
     );
     return $schedules;
@@ -52,7 +52,7 @@ function get_daily_post_summary() {
             'meta_title' => get_post_meta( $post->ID, '_yoast_wpseo_title', true ),
             'meta_description' => get_post_meta( $post->ID, '_yoast_wpseo_metadesc', true ),
             'meta_keywords' => get_post_meta( $post->ID, '_yoast_wpseo_focuskw', true ),
-            'page_speed' => get_google_page_speed_score( get_permalink( $post->ID ) ),
+            'page_speed' => get_page_speed_score( get_permalink( $post->ID ) ),
         );
         array_push( $summary, $post_data );
     }
@@ -73,7 +73,7 @@ function send_daily_post_summary_callback() {
         $message .= 'Meta Title: ' . $post_data['meta_title'] . "\n";
         $message .= 'Meta Description: ' . $post_data['meta_description'] . "\n";
         $message .= 'Meta Keywords: ' . $post_data['meta_keywords'] . "\n";
-        $message .= 'Google Page Speed Score: ' . $post_data['page_speed'] . "\n";
+        $message .= 'Page Speed Score: ' . $post_data['page_speed'] . " seconds \n";
         $message .= "\n";
     }
     $headers = array(
@@ -85,13 +85,18 @@ function send_daily_post_summary_callback() {
     
 }
 //Google Page Speed
-function get_google_page_speed_score($url) {
-    // Replace YOUR_API_KEY with your actual API key
-    $api_key = 'AIzaSyDCch41N6SCXaPa84G0CMsMw7uidyPrp2Y';
-    $api_url = "https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=".$url."&key=".$api_key;
-    $response = wp_remote_get($api_url);
-    $response_body = wp_remote_retrieve_body($response);
-    $json_data = json_decode($response_body,true);
-    $score = $json_data->lighthouseResult->categories->performance->score * 100;
-    return $score;
+function get_page_speed_score($url) {
+
+    $api_key = "416ca0ef-63e4-4caa-a047-ead672ecc874"; // your api key
+	$new_url = "http://www.webpagetest.org/runtest.php?url=".$url."&runs=1&f=xml&k=".$api_key; 
+	$run_result = simplexml_load_file($new_url);
+	$test_id = $run_result->data->testId;
+
+    sleep(60);
+    $xml_result = "http://www.webpagetest.org/xmlResult/".$test_id."/";
+	 $result = simplexml_load_file($xml_result);
+	 if($result){
+	    $time = (float) ($result->data->median->firstView->loadTime)/1000;
+        return $time;
+    }
 }
