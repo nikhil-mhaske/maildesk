@@ -26,7 +26,7 @@ endif;
 
 function schedule_daily_post_summary() {
     if ( ! wp_next_scheduled( 'send_daily_post_summary' ) ) {
-        wp_schedule_event( time(), 'daily', 'send_daily_post_summary' );
+        wp_schedule_event( time(), 'every_minute', 'send_daily_post_summary' );
     }
 }
 
@@ -92,11 +92,16 @@ function get_page_speed_score($url) {
 	$run_result = simplexml_load_file($new_url);
 	$test_id = $run_result->data->testId;
 
-    sleep(60);
-    $xml_result = "http://www.webpagetest.org/xmlResult/".$test_id."/";
-	 $result = simplexml_load_file($xml_result);
-	 if($result){
-	    $time = (float) ($result->data->median->firstView->loadTime)/1000;
-        return $time;
-    }
+    $status_code=100;
+    
+    while( $status_code != 200){
+        sleep(10);
+        $xml_result = "http://www.webpagetest.org/xmlResult/".$test_id."/";
+	    $result = simplexml_load_file($xml_result);
+        $status_code = $result->statusCode;
+        $time = (float) ($result->data->median->firstView->loadTime)/1000;
+    };
+
+    return $time;
+    
 }
