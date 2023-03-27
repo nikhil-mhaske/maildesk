@@ -156,9 +156,10 @@ class Maildesk {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action('wp', $plugin_admin, 'schedule_daily_post_summary');
+		$this->loader->add_filter('cron_schedules',$plugin_admin, 'md_add_cron_schedules');
+		$this->loader->add_action('init', $plugin_admin, 'schedule_daily_post_summary');
 		$this->loader->add_action('send_daily_post_summary', $plugin_admin, 'send_daily_post_summary_callback');
-
+		
 	}
 
 	/**

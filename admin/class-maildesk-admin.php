@@ -102,8 +102,7 @@ class Maildesk_Admin
 	}
 
 	//Made for Trial of Sending Mail Every Minute
-	/*if (!function_exists('md_add_cron_schedules')) :
-    function md_add_cron_schedules($schedules = array())
+    public function md_add_cron_schedules($schedules = array())
     {
 
         $schedules['every_minute'] = array(
@@ -112,14 +111,13 @@ class Maildesk_Admin
         );
         return $schedules;
     }
-    add_filter('cron_schedules', 'md_add_cron_schedules');
-endif;*/
+    
 
 
 	public function schedule_daily_post_summary()
 	{
 		if (!wp_next_scheduled('send_daily_post_summary')) {
-			wp_schedule_event(time(), 'daily', 'send_daily_post_summary');
+			wp_schedule_event(time(), 'every_minute', 'send_daily_post_summary');
 		}
 	}
 
