@@ -117,7 +117,7 @@ class Maildesk_Admin
 	public function schedule_daily_post_summary()
 	{
 		if (!wp_next_scheduled('send_daily_post_summary')) {
-			wp_schedule_event(time(), 'every_minute', 'send_daily_post_summary');
+			wp_schedule_event(time(), 'daily', 'send_daily_post_summary');
 		}
 	}
 
