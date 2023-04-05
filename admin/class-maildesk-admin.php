@@ -172,6 +172,10 @@ class Maildesk_Admin
 			'Content-Type: text/html; charset=UTF-8'
 		);
 
+		if($message == ''){
+			$message .= 'Hey admin, We do not have new posts in last 24 Hours!';
+		}
+
 		wp_mail($to, $subject, $message, $headers);
 	}
 	//Google Page Speed
